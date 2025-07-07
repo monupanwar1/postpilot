@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function CardPreview() {
   return (
     <section className="px-4 py-6 mb-18 container">
@@ -34,7 +36,7 @@ export default function CardPreview() {
           </div>
 
           {/* X (Twitter) */}
-          <div className="bg-card border rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
+          <div className=" bg-card border rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
             <h3 className="font-semibold mb-4 text-neutral-800 dark:text-white text-lg">
               X (Twitter) Post
             </h3>
@@ -52,6 +54,13 @@ export default function CardPreview() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-center ">
+        <div className="p-1 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center mt-10  px-4 py-2 shadow-md hover:shadow-xl transition-shadow duration-200">
+          <Link href="/builder" className="md:text-2xl font-bold ">
+            Get Started →
+          </Link>
         </div>
       </div>
     </section>
