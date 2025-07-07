@@ -2,8 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 export default function TabsSection() {
   return (
-    <section className="container pb-16 px-4" id="platform-tabs">
-      <div className=" mx-auto max-w-7xl">
+    <section className="container pb-16 px-4 min-h-screen " id="platform-tabs">
+      <div className=" mx-auto max-w-8xl">
         <Tabs defaultValue="linkedin" className="w-full">
           <div className="flex justify-center mb-8">
             <TabsList className="grid w-full max-w-4xl grid-cols-5 h-12 p-1 bg-muted/50 backdrop-blur-sm">

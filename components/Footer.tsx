@@ -2,7 +2,7 @@ import { Magnet } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-muted/30 border-2 w-full border-gray-300">
+    <footer className=" bg-muted/30 border-t w-full ">
       <section className="container mx-auto py-4 px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">

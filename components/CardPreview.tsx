@@ -56,7 +56,7 @@ export default function CardPreview() {
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-center ">
+      <div className="flex items-center justify-center mt-10  ">
         <div className="p-1 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center mt-10  px-4 py-2 shadow-md hover:shadow-xl transition-shadow duration-200">
           <Link href="/builder" className="md:text-2xl font-bold ">
             Get Started →

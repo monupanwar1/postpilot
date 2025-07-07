@@ -1,9 +1,10 @@
+import Footer from '@/components/Footer';
 import TabsSection from '@/components/TabsSection';
 import { Badge } from '@/components/ui/badge';
 
 export default function page() {
   return (
-    <main className="p-10 ">
+    <main className="mt-10 min-h-screen flex items-center justify-center flex-col space-y-8 ">
       <section className="container mx-auto max-w-4xl text-center">
         <Badge variant="secondary" className="mb-4">
           🤖 Powered by AI · Built for Creators
@@ -17,6 +18,7 @@ export default function page() {
         </h1>
       </section>
       <TabsSection/>
+      <Footer/>
     </main>
   );
 }
