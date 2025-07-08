@@ -14,7 +14,7 @@ export default function HeroSection() {
         </span>
       </h1>
       <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-        🚀 Boost your brand with AI-crafted posts that look native to LinkedIn,
+        🚀 Boost your brand with AI-crafted profile that look native to LinkedIn,
         X (Twitter), Instagram, Facebook, and TikTok. Fully customizable,
         high-converting visuals — no design skills needed.
       </p>

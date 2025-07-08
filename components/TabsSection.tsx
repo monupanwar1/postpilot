@@ -1,4 +1,5 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import XTemplate from './XTemplate';
 
 export default function TabsSection() {
   return (
@@ -18,8 +19,10 @@ export default function TabsSection() {
                 value="x"
                 className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs"
               >
-                <div className="h-3 w-3 bg-black dark:bg-white rounded" />X
+                <div className="h-3 w-3 bg-neutral-900 rounded" />
+                X
               </TabsTrigger>
+              
               <TabsTrigger
                 value="instagram"
                 className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs"
@@ -48,7 +51,7 @@ export default function TabsSection() {
             <h1>LinkedIn</h1>
           </TabsContent>
           <TabsContent value="x">
-            <h1>X</h1>
+          <XTemplate/>
           </TabsContent>
           <TabsContent value="instagram">
             <h1>Instagram</h1>

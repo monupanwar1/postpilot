@@ -13,7 +13,7 @@ export default function Header() {
           </div>
           <Link href="/">
             <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-              PostPilot
+              ProfilePilot
             </h1>
           </Link>
         </div>
