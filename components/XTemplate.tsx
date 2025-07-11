@@ -1,5 +1,6 @@
 'use client';
 
+import { generateProfile } from '@/actions/action';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +22,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { AccountDetails, ProfileInformation } from '@/Types/types';
+import * as htmlToImage from 'html-to-image';
 import {
   Bell,
   Calendar,
@@ -29,10 +31,12 @@ import {
   LinkIcon,
   Mail,
   MapPin,
+  Moon,
   MoreHorizontal,
+  Sun,
 } from 'lucide-react';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 // Utility for header background color class
 const getHeaderColor = (color: string) => {
@@ -50,13 +54,82 @@ export default function XTemplate() {
   const [profile, setProfile] = useState<ProfileInformation>({
     displayName: 'John Doe',
     username: 'johndoe',
-    avatar: 'johndoe',
+    avatar: '/placeholder.svg?height=128&width=128',
     bio: 'Software Engineer • Building the future • Coffee enthusiast ☕',
     location: 'San Francisco, CA',
     website: 'johndoe.dev',
     joinDate: 'March 2019',
   });
 
+  const [loading, setLoading] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+
+
+  const handleGenerateProfile = async () => {
+    if (clickCount >= 2) return; // Disable after 2 clicks
+
+    const prompt = `Rewrite and improve the following Twitter bio using exactly 30 words. Keep it professional and engaging. Return ONLY valid JSON with keys: displayName, username, bio.
+  
+    Current bio: "${profile.bio}"`;
+
+    setLoading(true);
+
+    try {
+      const aiText = await generateProfile(prompt);
+      console.log('📩 Raw AI Response:', aiText);
+      setLoading(false);
+
+      if (!aiText) {
+        console.error('❌ Empty response from AI.');
+        return;
+      }
+
+      // 🧼 Clean AI response
+      const cleanedText = aiText
+        .trim()
+        .replace(/^```json/, '')
+        .replace(/^```/, '')
+        .replace(/```$/, '')
+        .trim();
+
+      // 🔍 Try to extract JSON using regex if it’s not clean
+      const jsonMatch = cleanedText.match(/{[\s\S]*?}/);
+      if (!jsonMatch) {
+        console.error('⚠️ No valid JSON found in AI response:', cleanedText);
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonMatch[0]);
+      } catch (error) {
+        console.error('⚠️ Still failed to parse JSON:', jsonMatch[0], error);
+        return;
+      }
+
+      // ⏱️ Enforce exactly 30 words
+      let bio = parsed.bio ?? profile.bio;
+      const words = bio.trim().split(/\s+/);
+      if (words.length > 30) {
+        bio = words.slice(0, 30).join(' ') + '.';
+      }
+
+      // ✅ Update state
+      setProfile((prev) => ({
+        ...prev,
+        displayName: parsed.displayName ?? prev.displayName,
+        username: parsed.username ?? prev.username,
+        bio,
+      }));
+
+      // 🔁 Increase click count
+      setClickCount((prev) => prev + 1);
+    } catch (err) {
+      setLoading(false);
+      console.error('❌ Error in generateProfile:', err);
+    }
+  };
+  
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
     following: '1,234',
     followers: '5,678',
@@ -76,15 +149,70 @@ export default function XTemplate() {
     setAccountDetails((prev) => ({ ...prev, [field]: value }));
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  const HandleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile((prev) => ({
+          ...prev,
+          avatar: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!previewRef.current) return;
+
+    try {
+      const dataUrl = await htmlToImage.toPng(previewRef.current, {
+        quality: 1,
+        pixelRatio: 2,
+      });
+
+      const link = document.createElement('a');
+      link.download = `${profile.username}-profile.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.error('❌ Failed to export PNG:', error);
+    }
+  };
+
   return (
     <section className="min-h-screen container">
       <div className="grid lg:grid-cols-2 min-h-screen">
         {/* Left Side - Form */}
         <div className="p-6 overflow-y-auto">
           <div className="max-w-md mx-auto space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold">𝕏 Profile Builder</h1>
-              <p className="mt-1">Create your Twitter/X profile</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold">𝕏 Profile Builder</h1>
+                <p className="mt-1">Create your Twitter/X profile</p>
+              </div>
+
+              {/* 🌗 Theme Toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  updateAccountDetails(
+                    'profileTheme',
+                    accountDetails.profileTheme === 'dark' ? 'light' : 'dark',
+                  )
+                }
+              >
+                {accountDetails.profileTheme === 'dark' ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </Button>
             </div>
 
             {/* Profile Info Card */}
@@ -95,11 +223,14 @@ export default function XTemplate() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="avatar" className="text-sm font-medium">
-                    Profile Picture
-                  </Label>
+                  <Label htmlFor="avatar">Profile Picture</Label>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button
+                      onClick={() => fileInputRef.current?.click()}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                    >
                       <ImageIcon className="h-4 w-4 mr-2" />
                       Upload
                     </Button>
@@ -108,25 +239,25 @@ export default function XTemplate() {
                       type="file"
                       accept="image/*"
                       className="hidden"
+                      ref={fileInputRef}
+                      onChange={HandleImageChange}
                     />
-                    <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-border">
-                      <Avatar className="h-20 w-20 border-2 border-border">
-                        {profile.avatar ? (
-                          <AvatarImage
-                            src={profile.avatar}
-                            alt="avatar"
-                            className="object-cover"
-                          />
-                        ) : null}
-                        <AvatarFallback className="bg-gray-300 text-xl font-bold">
-                          {profile.displayName
-                            .split(' ')
-                            .map((w) => w[0])
-                            .join('')
-                            .toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
+                    <Avatar className="h-20 w-20 border-2 border-border">
+                      {profile.avatar && (
+                        <AvatarImage
+                          src={profile.avatar}
+                          alt="avatar"
+                          className="object-cover"
+                        />
+                      )}
+                      <AvatarFallback className="bg-gray-300 text-xl font-bold">
+                        {profile.displayName
+                          .split(' ')
+                          .map((w) => w[0])
+                          .join('')
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
                 </div>
 
@@ -262,6 +393,17 @@ export default function XTemplate() {
               </CardContent>
             </Card>
           </div>
+          <Button
+            onClick={handleGenerateProfile}
+            disabled={loading || clickCount >= 2}
+            className="w-full"
+          >
+            {loading
+              ? 'Generating...'
+              : clickCount >= 2
+              ? 'Limit Reached'
+              : 'Generate AI Profile'}
+          </Button>
         </div>
 
         {/* Right Side - Live Preview */}
@@ -272,7 +414,14 @@ export default function XTemplate() {
               <p className="text-sm">See your profile in real-time</p>
             </div>
 
-            <div className="rounded-2xl overflow-hidden border">
+            <div
+              ref={previewRef}
+              className={`rounded-2xl overflow-hidden border transition-colors duration-300 ${
+                accountDetails.profileTheme === 'dark'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-black'
+              }`}
+            >
               <div
                 className={`h-32 ${getHeaderColor(accountDetails.headerColor)}`}
               />
@@ -281,7 +430,7 @@ export default function XTemplate() {
                 <div className="flex justify-between items-start -mt-16 mb-4">
                   <Avatar className="w-32 h-32 border-4 border-white">
                     <AvatarImage
-                      src="/placeholder.svg?height=128&width=128"
+                      src={profile.avatar}
                       alt={profile.displayName}
                     />
                     <AvatarFallback className="text-2xl font-bold bg-gray-300">
@@ -377,7 +526,11 @@ export default function XTemplate() {
             </div>
 
             <div className="flex justify-center">
-              <Button className="px-6 py-2 mt-10 hover:bg-gray-800" size="lg">
+              <Button
+                onClick={handleDownload}
+                className="px-6 py-2 mt-10 hover:bg-gray-800"
+                size="lg"
+              >
                 Export Profile
               </Button>
             </div>
