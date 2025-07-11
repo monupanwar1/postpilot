@@ -393,17 +393,19 @@ export default function XTemplate() {
               </CardContent>
             </Card>
           </div>
-          <Button
-            onClick={handleGenerateProfile}
-            disabled={loading || clickCount >= 2}
-            className="w-full"
-          >
-            {loading
-              ? 'Generating...'
-              : clickCount >= 2
-              ? 'Limit Reached'
-              : 'Generate AI Profile'}
-          </Button>
+          <div className="flex items-center justify-center mt-10">
+            <Button
+              onClick={handleGenerateProfile}
+              disabled={loading || clickCount >= 2}
+              className="px-4 py-2 rounded-md"
+            >
+              {loading
+                ? 'Generating...'
+                : clickCount >= 2
+                ? 'Limit Reached'
+                : 'Generate AI Profile'}
+            </Button>
+          </div>
         </div>
 
         {/* Right Side - Live Preview */}
@@ -446,27 +448,27 @@ export default function XTemplate() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-full"
+                      className="rounded-full border-gray-300 text-gray-800 dark:border-gray-600 dark:text-white"
                     >
                       <MoreHorizontal className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-full"
+                      className="rounded-full border-gray-300 text-gray-800 dark:border-gray-600 dark:text-white"
                     >
                       <Mail className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-full"
+                      className="rounded-full border-gray-300 text-gray-800 dark:border-gray-600 dark:text-white"
                     >
                       <Bell className="w-4 h-4" />
                     </Button>
                     <Button
                       size="sm"
-                      className="rounded-full hover:bg-gray-800"
+                      className="rounded-full hover:bg-gray-300 bg-gray-100 text-black dark:bg-white/10 dark:text-white"
                     >
                       Follow
                     </Button>
