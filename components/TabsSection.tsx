@@ -1,3 +1,4 @@
+import LinkdeinTemplate from './LinkdeinTemplate';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import XTemplate from './XTemplate';
 
@@ -48,7 +49,7 @@ export default function TabsSection() {
           </div>
 
           <TabsContent value="linkedin">
-            <h1>LinkedIn</h1>
+           <LinkdeinTemplate/>
           </TabsContent>
           <TabsContent value="x">
           <XTemplate/>
