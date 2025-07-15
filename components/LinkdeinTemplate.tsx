@@ -1,5 +1,7 @@
 'use client';
+import { generateProfile } from '@/actions/action';
 import { AccountDetails, ProfileInformation } from '@/Types/types';
+import * as htmlToImage from 'html-to-image';
 import {
   Calendar,
   ImageIcon,
@@ -88,6 +90,69 @@ export default function LinkdeinTemplate() {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleDownload = async () => {
+    if (!previewRef.current) return;
+    try {
+      const dataUrl = await htmlToImage.toPng(previewRef.current, {
+        quality: 1,
+        pixelRatio: 2,
+      });
+      const link = document.createElement('a');
+      link.download = `${profile.username}-profile.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.log('failed to export png', error);
+    }
+  };
+
+  const handleGenerateProfile = async () => {
+    if (clickCount >= 2) return;
+
+    const prompt = `Rewrite and improve the following LinkedIn headline using exactly 10 words. Keep it professional and engaging. Return ONLY valid JSON with keys: displayName, username, headline.
+    
+    Current bio: "${profile.headline}"`;
+
+    setLoading(true);
+    try {
+      const aiText = await generateProfile(prompt);
+      if (!aiText) return;
+
+      const cleanedText = aiText
+        .trim()
+        .replace(/^```json/, '')
+        .replace(/^```/, '')
+        .replace(/```$/, '')
+        .trim();
+
+      const jsonMatch = cleanedText.match(/{[\s\S]*?}/);
+      if (!jsonMatch) throw new Error('No valid JSON found in AI response');
+
+      const parsed = JSON.parse(jsonMatch[0]);
+
+      let headline = parsed.headline ?? profile.headline;
+      const words = headline.trim().split(/\s+/);
+      if (words.length > 10) {
+        headline = words.slice(0, 10).join(' ') + '.';
+      }
+
+      setProfile((prev) => ({
+        ...prev,
+        displayName: parsed.displayName ?? prev.displayName,
+        username: parsed.username ?? prev.username,
+        headline,
+      }));
+
+      setClickCount((prev) => prev + 1);
+    } catch (error) {
+      console.error('❌ Error in generateProfile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
 
   return (
     <section className="min-h-screen container">
@@ -286,6 +351,7 @@ export default function LinkdeinTemplate() {
           {/* Generate Button */}
           <div className="flex items-center justify-center mt-10">
             <Button
+            onClick={handleGenerateProfile}
               disabled={loading || clickCount >= 2}
               className="px-4 py-2 rounded-md"
             >
@@ -345,12 +411,11 @@ export default function LinkdeinTemplate() {
                   <h1 className="text-xl font-bold leading-tight">
                     {profile.displayName}
                   </h1>
-                  <p className="text-sm ">
-                    {profile.headline}
-                  </p>
-                  <p className="text-sm ">
-                    {profile.industry}
-                  </p>
+                  <p className="text-sm ">{profile.headline}</p>
+                  <p className="text-bold "> {profile.industry
+                  ? profile.industry.charAt(0).toUpperCase() + profile.industry.slice(1).toLowerCase()
+                 : ''}
+                </p>
                 </div>
 
                 {/* Location, Website, Join Date */}
@@ -420,7 +485,11 @@ export default function LinkdeinTemplate() {
 
             {/* Export Button */}
             <div className="flex justify-center mt-8">
-              <Button className="px-6 py-2 hover:bg-gray-800" size="lg">
+              <Button
+                onClick={handleDownload}
+                className="px-6 py-2 hover:bg-gray-800"
+                size="lg"
+              >
                 Export LinkedIn Profile
               </Button>
             </div>

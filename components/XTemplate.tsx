@@ -64,9 +64,8 @@ export default function XTemplate() {
   const [loading, setLoading] = useState(false);
   const [clickCount, setClickCount] = useState(0);
 
-
   const handleGenerateProfile = async () => {
-    if (clickCount >= 2) return; // Disable after 2 clicks
+    if (clickCount >= 2) return;
 
     const prompt = `Rewrite and improve the following Twitter bio using exactly 30 words. Keep it professional and engaging. Return ONLY valid JSON with keys: displayName, username, bio.
   
@@ -76,11 +75,10 @@ export default function XTemplate() {
 
     try {
       const aiText = await generateProfile(prompt);
-      console.log('📩 Raw AI Response:', aiText);
+
       setLoading(false);
 
       if (!aiText) {
-        console.error('❌ Empty response from AI.');
         return;
       }
 
@@ -129,7 +127,7 @@ export default function XTemplate() {
       console.error('❌ Error in generateProfile:', err);
     }
   };
-  
+
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
     following: '1,234',
     followers: '5,678',
@@ -479,7 +477,7 @@ export default function XTemplate() {
                   <div className="flex items-center gap-1">
                     <h1 className="text-xl font-bold">{profile.displayName}</h1>
                     {accountDetails.isVerified && (
-                      <circle-Check className="w-5 h-5 text-blue-500 fill-current" />
+                      <CheckCircle className="w-5 h-5 text-blue-500 fill-current" />
                     )}
                   </div>
                   <p>@{profile.username}</p>
