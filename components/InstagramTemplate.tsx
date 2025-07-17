@@ -1,5 +1,7 @@
 'use client';
 
+import type React from 'react';
+
 import { generateProfile } from '@/actions/action';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -12,51 +14,28 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { AccountDetails, ProfileInformation } from '@/Types/types';
+import type { AccountDetails, ProfileInformation } from '@/Types/types';
 import * as htmlToImage from 'html-to-image';
 import {
-  Bell,
-  Calendar,
   ImageIcon,
   LinkIcon,
-  Mail,
-  MapPin,
   Moon,
   MoreHorizontal,
   Sun,
+  UserPlus,
 } from 'lucide-react';
-
 import { useRef, useState } from 'react';
 
-// Utility for header background color class
-const getHeaderColor = (color: string) => {
-  const map: Record<string, string> = {
-    blue: 'bg-blue-500',
-    purple: 'bg-purple-500',
-    pink: 'bg-pink-500',
-    green: 'bg-green-500',
-    orange: 'bg-orange-500',
-  };
-  return map[color] || 'bg-gray-300';
-};
-
-export default function XTemplate() {
+export default function InstagramTemplate() {
   const [profile, setProfile] = useState<ProfileInformation>({
     displayName: 'John Doe',
     username: 'johndoe',
-    avatar: '/placeholder.svg?height=128&width=128',
-    bio: 'Software Engineer • Building the future • Coffee enthusiast ☕',
+    avatar: '/placeholder.svg?height=150&width=150',
+    bio: 'Digital Creator 📸\nLiving life one photo at a time ✨\n📍 San Francisco, CA',
     location: 'San Francisco, CA',
-    website: 'johndoe.dev',
+    website: 'johndoe.com',
     joinDate: 'March 2019',
   });
 
@@ -66,22 +45,20 @@ export default function XTemplate() {
   const handleGenerateProfile = async () => {
     if (clickCount >= 2) return;
 
-    const prompt = `Rewrite and improve the following Twitter bio using exactly 30 words. Keep it professional and engaging. Return ONLY valid JSON with keys: displayName, username, bio.
-  
+    const prompt = `Rewrite and improve the following Instagram bio using exactly 30 words. Keep it creative and engaging with emojis. Return ONLY valid JSON with keys: displayName, username, bio.
+    
     Current bio: "${profile.bio}"`;
 
     setLoading(true);
-
     try {
       const aiText = await generateProfile(prompt);
-
       setLoading(false);
 
       if (!aiText) {
         return;
       }
 
-      // 🧼 Clean AI response
+      // Clean AI response
       const cleanedText = aiText
         .trim()
         .replace(/^```json/, '')
@@ -89,7 +66,7 @@ export default function XTemplate() {
         .replace(/```$/, '')
         .trim();
 
-      // 🔍 Try to extract JSON using regex if it’s not clean
+      // Try to extract JSON using regex if it's not clean
       const jsonMatch = cleanedText.match(/{[\s\S]*?}/);
       if (!jsonMatch) {
         console.error('⚠️ No valid JSON found in AI response:', cleanedText);
@@ -104,14 +81,14 @@ export default function XTemplate() {
         return;
       }
 
-      // ⏱️ Enforce exactly 30 words
+      // Enforce exactly 30 words
       let bio = parsed.bio ?? profile.bio;
       const words = bio.trim().split(/\s+/);
       if (words.length > 30) {
         bio = words.slice(0, 30).join(' ') + '.';
       }
 
-      // ✅ Update state
+      // Update state
       setProfile((prev) => ({
         ...prev,
         displayName: parsed.displayName ?? prev.displayName,
@@ -119,7 +96,7 @@ export default function XTemplate() {
         bio,
       }));
 
-      // 🔁 Increase click count
+      // Increase click count
       setClickCount((prev) => prev + 1);
     } catch (err) {
       setLoading(false);
@@ -129,9 +106,10 @@ export default function XTemplate() {
 
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
     following: '1,234',
-    followers: '5,678',
+    followers: '5.6K',
+    posts: '342',
     isVerified: false,
-    headerColor: 'blue',
+    headerColor: 'pink',
     profileTheme: 'dark',
   });
 
@@ -173,7 +151,7 @@ export default function XTemplate() {
       });
 
       const link = document.createElement('a');
-      link.download = `${profile.username}-profile.png`;
+      link.download = `${profile.username}-instagram-profile.png`;
       link.href = dataUrl;
       link.click();
     } catch (error) {
@@ -185,17 +163,18 @@ export default function XTemplate() {
     <section className="min-h-screen container">
       <div className="grid lg:grid-cols-2 min-h-screen">
         {/* Left Side - Form */}
-        <div className="p-6 overflow-y-auto">
+        <div className="p-6 overflow-y-auto ">
           <div className="max-w-md mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
-                  𝕏 Profile Builder
+                  Instagram Profile Builder
                 </h1>
-                <p className="mt-1">Create your Twitter/X profile</p>
+                <p className="mt-1 text-gray-600">
+                  Create your Instagram profile
+                </p>
               </div>
-
-              {/* 🌗 Theme Toggle */}
+              {/* Theme Toggle */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -223,7 +202,23 @@ export default function XTemplate() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="avatar">Profile Picture</Label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-20 w-20 border-2 border-gray-200">
+                      {profile.avatar && (
+                        <AvatarImage
+                          src={profile.avatar || '/placeholder.svg'}
+                          alt="avatar"
+                          className="object-cover"
+                        />
+                      )}
+                      <AvatarFallback className="bg-gradient-to-br from-purple-400 to-pink-400 text-white text-xl font-bold">
+                        {profile.displayName
+                          .split(' ')
+                          .map((w) => w[0])
+                          .join('')
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                     <Button
                       onClick={() => fileInputRef.current?.click()}
                       variant="outline"
@@ -231,7 +226,7 @@ export default function XTemplate() {
                       className="flex-1"
                     >
                       <ImageIcon className="h-4 w-4 mr-2" />
-                      Upload
+                      Upload Photo
                     </Button>
                     <Input
                       id="avatar"
@@ -241,22 +236,6 @@ export default function XTemplate() {
                       ref={fileInputRef}
                       onChange={HandleImageChange}
                     />
-                    <Avatar className="h-20 w-20 border-2 border-border">
-                      {profile.avatar && (
-                        <AvatarImage
-                          src={profile.avatar}
-                          alt="avatar"
-                          className="object-cover"
-                        />
-                      )}
-                      <AvatarFallback className="bg-gray-300 text-xl font-bold">
-                        {profile.displayName
-                          .split(' ')
-                          .map((w) => w[0])
-                          .join('')
-                          .toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
                   </div>
                 </div>
 
@@ -294,15 +273,8 @@ export default function XTemplate() {
                     id="bio"
                     value={profile.bio}
                     onChange={(e) => updateProfile('bio', e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="location">Location</Label>
-                  <Input
-                    id="location"
-                    value={profile.location}
-                    onChange={(e) => updateProfile('location', e.target.value)}
+                    placeholder="Tell your story with emojis..."
+                    rows={3}
                   />
                 </div>
 
@@ -317,32 +289,23 @@ export default function XTemplate() {
               </CardContent>
             </Card>
 
-            {/* Account Details */}
+            {/* Account Stats */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Account Details</CardTitle>
+                <CardTitle className="text-lg">Account Stats</CardTitle>
                 <CardDescription>
-                  Follower counts and header theme
+                  Posts, followers, and following counts
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="joinDate">Join Date</Label>
-                  <Input
-                    id="joinDate"
-                    value={profile.joinDate}
-                    onChange={(e) => updateProfile('joinDate', e.target.value)}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="following">Following</Label>
+                    <Label htmlFor="posts">Posts</Label>
                     <Input
-                      id="following"
-                      value={accountDetails.following}
+                      id="posts"
+                      value={accountDetails.posts}
                       onChange={(e) =>
-                        updateAccountDetails('following', e.target.value)
+                        updateAccountDetails('posts', e.target.value)
                       }
                     />
                   </div>
@@ -356,27 +319,16 @@ export default function XTemplate() {
                       }
                     />
                   </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="headerColor">Header Color</Label>
-                  <Select
-                    value={accountDetails.headerColor}
-                    onValueChange={(value) =>
-                      updateAccountDetails('headerColor', value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select color" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="blue">Blue</SelectItem>
-                      <SelectItem value="purple">Purple</SelectItem>
-                      <SelectItem value="pink">Pink</SelectItem>
-                      <SelectItem value="green">Green</SelectItem>
-                      <SelectItem value="orange">Orange</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <Label htmlFor="following">Following</Label>
+                    <Input
+                      id="following"
+                      value={accountDetails.following}
+                      onChange={(e) =>
+                        updateAccountDetails('following', e.target.value)
+                      }
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -391,28 +343,31 @@ export default function XTemplate() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-          <div className="flex items-center justify-center mt-10">
-            <Button
-              onClick={handleGenerateProfile}
-              disabled={loading || clickCount >= 2}
-              className="px-6 py-2"
-            >
-              {loading
-                ? 'Generating...'
-                : clickCount >= 2
-                ? 'Limit Reached'
-                : '✨ Generate AI Bio'}
-            </Button>
+
+            <div className="flex items-center justify-center">
+              <Button
+                onClick={handleGenerateProfile}
+                disabled={loading || clickCount >= 2}
+                className="px-6 py-2"
+              >
+                {loading
+                  ? 'Generating...'
+                  : clickCount >= 2
+                  ? 'Limit Reached'
+                  : '✨ Generate AI Bio'}
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Right Side - Live Preview */}
-        <div className="p-6 overflow-y-auto">
-          <div className="max-w-md mx-auto">
+        <div className="p-6 overflow-y-auto ">
+          <div className="max-w-sm mx-auto">
             <div className="mb-4">
               <h2 className="text-xl font-semibold">Live Preview</h2>
-              <p className="text-sm">See your profile in real-time</p>
+              <p className="text-sm text-gray-600">
+                See your profile in real-time
+              </p>
             </div>
 
             <div
@@ -423,58 +378,66 @@ export default function XTemplate() {
                   : 'bg-white text-black'
               }`}
             >
-              <div
-                className={`h-32 ${getHeaderColor(accountDetails.headerColor)}`}
-              />
+              {/* Profile Header */}
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="w-20 h-20 border-2 border-gray-200">
+                      <AvatarImage
+                        src={profile.avatar || '/placeholder.svg'}
+                        alt={profile.displayName}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="bg-gradient-to-br from-purple-400 to-pink-400 text-white text-lg font-bold">
+                        {profile.displayName
+                          .split(' ')
+                          .map((w) => w[0])
+                          .join('')
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
 
-              <div className="px-4 pb-4">
-                <div className="flex justify-between items-start -mt-16 mb-4">
-                  <Avatar className="w-32 h-32 border-4 border-white">
-                    <AvatarImage
-                      src={profile.avatar}
-                      alt={profile.displayName}
-                    />
-                    <AvatarFallback className="text-2xl font-bold bg-gray-300">
-                      {profile.displayName
-                        .split(' ')
-                        .map((w) => w[0])
-                        .join('')
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-4 mb-2">
+                        <span className="font-semibold text-lg">
+                          @{profile.username}
+                        </span>
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-md text-sm"
+                        >
+                          Follow
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </div>
 
-                  <div className="flex md:space-x-6 mt-20">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full border-gray-300 text-gray-800 dark:border-gray-600 dark:text-white"
-                    >
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full border-gray-300 text-gray-800 dark:border-gray-600 dark:text-white"
-                    >
-                      <Mail className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full border-gray-300 text-gray-800 dark:border-gray-600 dark:text-white"
-                    >
-                      <Bell className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="rounded-full hover:bg-gray-300 bg-gray-100 text-black dark:bg-white/10 dark:text-white"
-                    >
-                      Follow
-                    </Button>
+                      <div className="flex gap-6 text-sm">
+                        <div className="text-center">
+                          <div className="font-semibold">
+                            {accountDetails.posts}
+                          </div>
+                          <div className="text-gray-600">posts</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-semibold">
+                            {accountDetails.followers}
+                          </div>
+                          <div className="text-gray-600">followers</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-semibold">
+                            {accountDetails.following}
+                          </div>
+                          <div className="text-gray-600">following</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mb-3">
+                <div className="mb-4">
                   <div className="flex items-center gap-1 mb-1">
                     <h1 className="font-semibold">{profile.displayName}</h1>
                     {accountDetails.isVerified && (
@@ -483,57 +446,49 @@ export default function XTemplate() {
                       </div>
                     )}
                   </div>
-                </div>
 
-                {profile.bio && <p className="mb-3">{profile.bio}</p>}
-
-                <div className="flex flex-wrap gap-4 mb-3 mt-2">
-                  {profile.location && (
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-sm">{profile.location}</span>
+                  {profile.bio && (
+                    <div className="text-sm whitespace-pre-line mb-2">
+                      {profile.bio}
                     </div>
                   )}
+
                   {profile.website && (
-                    <div className="flex items-center gap-1">
-                      <LinkIcon className="w-4 h-4" />
-                      <span className="text-sm text-blue-500 hover:underline cursor-pointer">
+                    <div className="flex items-center gap-1 text-sm text-blue-600">
+                      <LinkIcon className="w-3 h-3" />
+                      <span className="hover:underline cursor-pointer">
                         {profile.website}
                       </span>
                     </div>
                   )}
-                  {profile.joinDate && (
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      <span className="text-sm">Joined {profile.joinDate}</span>
-                    </div>
-                  )}
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex items-center gap-1">
-                    <span className="font-bold">
-                      {accountDetails.following}
-                    </span>
-                    <span>Following</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="font-bold">
-                      {accountDetails.followers}
-                    </span>
-                    <span>Followers</span>
-                  </div>
+                {/* Action Buttons */}
+                <div className="flex gap-2 mb-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-sm bg-transparent"
+                  >
+                    Message
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-sm bg-transparent"
+                  >
+                    Email
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <UserPlus className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-center">
-              <Button
-                onClick={handleDownload}
-                className="px-6 py-2 mt-10 hover:bg-gray-800"
-                size="lg"
-              >
-                Export Profile
+            <div className="flex justify-center mt-6">
+              <Button onClick={handleDownload} className="px-6 py-2 " size="lg">
+                📸 Export Profile
               </Button>
             </div>
           </div>

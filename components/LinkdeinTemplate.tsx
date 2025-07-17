@@ -163,7 +163,9 @@ export default function LinkdeinTemplate() {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold">LinkedIn Profile Builder</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
+                  LinkedIn Profile Builder
+                </h1>
                 <p className="mt-1">
                   Create your professional LinkedIn profile
                 </p>
@@ -351,15 +353,15 @@ export default function LinkdeinTemplate() {
           {/* Generate Button */}
           <div className="flex items-center justify-center mt-10">
             <Button
-            onClick={handleGenerateProfile}
+              onClick={handleGenerateProfile}
               disabled={loading || clickCount >= 2}
-              className="px-4 py-2 rounded-md"
+              className="px-6 py-2"
             >
               {loading
                 ? 'Generating...'
                 : clickCount >= 2
                 ? 'Limit Reached'
-                : 'Generate LinkedIn Profile'}
+                : '✨ Generate AI Bio'}
             </Button>
           </div>
         </div>
@@ -412,10 +414,13 @@ export default function LinkdeinTemplate() {
                     {profile.displayName}
                   </h1>
                   <p className="text-sm ">{profile.headline}</p>
-                  <p className="text-bold "> {profile.industry
-                  ? profile.industry.charAt(0).toUpperCase() + profile.industry.slice(1).toLowerCase()
-                 : ''}
-                </p>
+                  <p className="text-bold ">
+                    {' '}
+                    {profile.industry
+                      ? profile.industry.charAt(0).toUpperCase() +
+                        profile.industry.slice(1).toLowerCase()
+                      : ''}
+                  </p>
                 </div>
 
                 {/* Location, Website, Join Date */}

@@ -1,3 +1,4 @@
+import InstagramTemplate from './InstagramTemplate';
 import LinkdeinTemplate from './LinkdeinTemplate';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import XTemplate from './XTemplate';
@@ -55,7 +56,7 @@ export default function TabsSection() {
           <XTemplate/>
           </TabsContent>
           <TabsContent value="instagram">
-            <h1>Instagram</h1>
+           <InstagramTemplate/>
           </TabsContent>
           <TabsContent value="facebook">
             <h1>Facebook</h1>
