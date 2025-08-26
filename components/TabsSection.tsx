@@ -1,3 +1,4 @@
+import FacebookTemplate from './FacebookTemplate';
 import InstagramTemplate from './InstagramTemplate';
 import LinkdeinTemplate from './LinkdeinTemplate';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -21,7 +22,7 @@ export default function TabsSection() {
                 value="x"
                 className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs"
               >
-                <div className="h-3 w-3 bg-neutral-900 rounded" />
+                <div className="h-3 w-3 bg-neutral-950 rounded" />
                 X
               </TabsTrigger>
               
@@ -59,7 +60,7 @@ export default function TabsSection() {
            <InstagramTemplate/>
           </TabsContent>
           <TabsContent value="facebook">
-            <h1>Facebook</h1>
+            <FacebookTemplate/>
           </TabsContent>
           <TabsContent value="tiktok">
             <h1>TikTok</h1>
