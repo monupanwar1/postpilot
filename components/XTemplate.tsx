@@ -75,7 +75,7 @@ export default function XTemplate() {
   };
 
   const handleGenerateProfile = async () => {
-    const templateId = 'template2';
+    const templateId = 'template4';
 
     if (checkGenerateCookie(templateId)) {
       alert(

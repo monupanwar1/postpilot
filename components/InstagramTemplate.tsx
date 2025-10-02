@@ -54,7 +54,7 @@ export default function InstagramTemplate() {
   };
 
   const handleGenerateProfile = async () => {
-    const templateId = 'template2';
+    const templateId = 'template3';
 
     if (checkGenerateCookie(templateId)) {
       alert(
