@@ -10,7 +10,7 @@ export default function TabsSection() {
       <div className=" mx-auto max-w-8xl">
         <Tabs defaultValue="linkedin" className="w-full">
           <div className="flex justify-center mb-8">
-            <TabsList className="grid w-full max-w-4xl grid-cols-5 h-12 p-1 bg-muted/50 backdrop-blur-sm">
+            <TabsList className="grid w-full max-w-4xl grid-cols-4 h-12 p-1 bg-muted/50 backdrop-blur-sm">
               <TabsTrigger
                 value="linkedin"
                 className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs"
@@ -40,13 +40,13 @@ export default function TabsSection() {
                 <div className="h-3 w-3 bg-blue-600 rounded" />
                 Facebook
               </TabsTrigger>
-              <TabsTrigger
+              {/* <TabsTrigger
                 value="tiktok"
                 className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm text-xs"
               >
                 <div className="h-3 w-3 bg-black rounded" />
                 TikTok
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
           </div>
 
@@ -61,9 +61,6 @@ export default function TabsSection() {
           </TabsContent>
           <TabsContent value="facebook">
             <FacebookTemplate/>
-          </TabsContent>
-          <TabsContent value="tiktok">
-            <h1>TikTok</h1>
           </TabsContent>
         </Tabs>
       </div>
