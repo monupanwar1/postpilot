@@ -18,7 +18,10 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/#" target="_blank">
+          <Link
+            href="https://github.com/monupanwar1/postpilot.git"
+            target="_blank"
+          >
             <Button variant="outline" size="sm" className="hidden sm:flex">
               <Github className="h-4 w-4 mr-2" />
               <Star className="h-3 w-3 mr-1" />
