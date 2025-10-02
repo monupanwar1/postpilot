@@ -107,8 +107,26 @@ export default function LinkdeinTemplate() {
     }
   };
 
+  const checkGenerateCookie = (templateId: string) => {
+    return document.cookie
+      .split(';')
+      .some((c) => c.trim().startsWith(`${templateId}=true`));
+  };
+  const setGenerateCookie = (templateId: string) => {
+    const expireDate = new Date();
+    expireDate.setHours(expireDate.getHours() + 24); // 24 hours
+    document.cookie = `${templateId}=true; expires=${expireDate.toUTCString()}; path=/`;
+  };
+
   const handleGenerateProfile = async () => {
-    if (clickCount >= 2) return;
+    const templateId = 'template1';
+
+    if (checkGenerateCookie(templateId)) {
+      alert(
+        'You have reached the 1 free generation limit for this template. Try again after 24h.',
+      );
+      return;
+    }
 
     const prompt = `Rewrite and improve the following LinkedIn headline using exactly 10 words. Keep it professional and engaging. Return ONLY valid JSON with keys: displayName, username, headline.
     
@@ -145,6 +163,7 @@ export default function LinkdeinTemplate() {
       }));
 
       setClickCount((prev) => prev + 1);
+      setGenerateCookie(templateId);
     } catch (error) {
       console.error('❌ Error in generateProfile:', error);
     } finally {

@@ -63,7 +63,26 @@ export default function XTemplate() {
   const [loading, setLoading] = useState(false);
   const [clickCount, setClickCount] = useState(0);
 
+  const checkGenerateCookie = (templateId: string) => {
+    return document.cookie
+      .split(';')
+      .some((c) => c.trim().startsWith(`${templateId}=true`));
+  };
+  const setGenerateCookie = (templateId: string) => {
+    const expireDate = new Date();
+    expireDate.setHours(expireDate.getHours() + 24); // 24 hours
+    document.cookie = `${templateId}=true; expires=${expireDate.toUTCString()}; path=/`;
+  };
+
   const handleGenerateProfile = async () => {
+    const templateId = 'template2';
+
+    if (checkGenerateCookie(templateId)) {
+      alert(
+        'You have reached the 1 free generation limit for this template. Try again after 24h.',
+      );
+      return;
+    }
     if (clickCount >= 2) return;
 
     const prompt = `Rewrite and improve the following Twitter bio using exactly 30 words. Keep it professional and engaging. Return ONLY valid JSON with keys: displayName, username, bio.
@@ -121,6 +140,7 @@ export default function XTemplate() {
 
       // 🔁 Increase click count
       setClickCount((prev) => prev + 1);
+      setGenerateCookie(templateId)
     } catch (err) {
       setLoading(false);
       console.error('❌ Error in generateProfile:', err);
