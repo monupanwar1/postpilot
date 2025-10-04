@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Badge } from './ui/badge';
 
 export default function HeroSection() {
