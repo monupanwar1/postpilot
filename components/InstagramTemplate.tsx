@@ -6,6 +6,14 @@ import { generateProfile } from '@/actions/action';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
+import {
   Card,
   CardContent,
   CardDescription,
@@ -40,6 +48,8 @@ export default function InstagramTemplate() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [limitPopup, setLimitPopup] = useState(false);
+
   const [clickCount, setClickCount] = useState(0);
 
   const checkGenerateCookie = (templateId: string) => {
@@ -57,9 +67,7 @@ export default function InstagramTemplate() {
     const templateId = 'template3';
 
     if (checkGenerateCookie(templateId)) {
-      alert(
-        'You have reached the 1 free generation limit for this template. Try again after 24h.',
-      );
+      setLimitPopup(true);
       return;
     }
 
@@ -513,6 +521,27 @@ export default function InstagramTemplate() {
           </div>
         </div>
       </div>
+      <Dialog open={limitPopup} onOpenChange={setLimitPopup}>
+        <DialogContent className="sm:max-w-[400px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>⚠️ Limit Reached</DialogTitle>
+            <DialogDescription>
+              You have reached the <b>1 free generation limit</b> for this
+              template.
+              <br />
+              Please try again after 24 hours.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => setLimitPopup(false)}
+              className="bg-[#0AFF9D] text-black hover:bg-[#08c97d]"
+            >
+              Okay
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

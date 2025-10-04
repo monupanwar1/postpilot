@@ -34,6 +34,14 @@ import {
   MoreHorizontal,
   Sun,
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
 
 import { useRef, useState } from 'react';
 
@@ -61,6 +69,8 @@ export default function XTemplate() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [limitPopup, setLimitPopup] = useState(false);
+
   const [clickCount, setClickCount] = useState(0);
 
   const checkGenerateCookie = (templateId: string) => {
@@ -78,12 +88,9 @@ export default function XTemplate() {
     const templateId = 'template4';
 
     if (checkGenerateCookie(templateId)) {
-      alert(
-        'You have reached the 1 free generation limit for this template. Try again after 24h.',
-      );
+      setLimitPopup(true);
       return;
     }
-    if (clickCount >= 2) return;
 
     const prompt = `Rewrite and improve the following Twitter bio using exactly 30 words. Keep it professional and engaging. Return ONLY valid JSON with keys: displayName, username, bio.
   
@@ -140,7 +147,7 @@ export default function XTemplate() {
 
       // 🔁 Increase click count
       setClickCount((prev) => prev + 1);
-      setGenerateCookie(templateId)
+      setGenerateCookie(templateId);
     } catch (err) {
       setLoading(false);
       console.error('❌ Error in generateProfile:', err);
@@ -559,6 +566,27 @@ export default function XTemplate() {
           </div>
         </div>
       </div>
+      <Dialog open={limitPopup} onOpenChange={setLimitPopup}>
+        <DialogContent className="sm:max-w-[400px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>⚠️ Limit Reached</DialogTitle>
+            <DialogDescription>
+              You have reached the <b>1 free generation limit</b> for this
+              template.
+              <br />
+              Please try again after 24 hours.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => setLimitPopup(false)}
+              className="bg-[#0AFF9D] text-black hover:bg-[#08c97d]"
+            >
+              Okay
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
