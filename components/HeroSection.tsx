@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Badge } from './ui/badge';
 
 export default function HeroSection() {
@@ -14,10 +15,11 @@ export default function HeroSection() {
         </span>
       </h1>
       <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-        🚀 Boost your brand with AI-crafted profile that look native to LinkedIn,
-        X (Twitter), Instagram, Facebook, and TikTok. Fully customizable,
-        high-converting visuals — no design skills needed.
+        🚀 Boost your brand with AI-crafted profile that look native to
+        LinkedIn, X (Twitter), Instagram, Facebook, and TikTok. Fully
+        customizable, high-converting visuals — no design skills needed.
       </p>
+      
     </section>
   );
 }
